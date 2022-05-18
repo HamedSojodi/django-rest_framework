@@ -6,6 +6,7 @@ def clean_email(email):
     if 'admin' in email:
         raise serializers.ValidationError('admin not be used')
 
+
 # using serializer
 # class UserRegisterSerializer(serializers.Serializer):
 #     username = serializers.CharField(required=True)
@@ -23,8 +24,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password', 'password2')
         extra_kwargs = {
             'email': {'validators': [clean_email]},
-            'password':{'write_only':True}
+            'password': {'write_only': True}
         }
+
+    def create(self, validated_data):
+        del validated_data['password2']
+        return User.objects.create_user(**validated_data)
 
     def validate_username(self, value):
         if value == 'admin':
@@ -34,3 +39,4 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError('password must be current')
+        return attrs
