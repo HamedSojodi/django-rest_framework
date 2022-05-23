@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 # Create your views here.
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView, \
+    DestroyAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -45,18 +46,47 @@ class QuestionCreateView(APIView):
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class QuestionUpdateView(APIView):
-    def put(self, request, pk):
-        question = Question.objects.get(pk=pk)
-        ser_data = QuestionSerializer(instance=question, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(ser_data.data, status=status.HTTP_200_OK)
-        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+#
+# class QuestionCreateView(CreateAPIView):
+#     serializer_class = QuestionSerializer
 
 
-class QuestionDeleteView(APIView):
-    def delete(self, request, pk):
+#
+# class QuestionUpdateView(APIView):
+#     def put(self, request, pk):
+#         question = Question.objects.get(pk=pk)
+#         ser_data = QuestionSerializer(instance=question, data=request.data, partial=True)
+#         if ser_data.is_valid():
+#             ser_data.save()
+#             return Response(ser_data.data, status=status.HTTP_200_OK)
+#         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class QuestionUpdateView(UpdateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    # lookup_field = 'pk'
+    #
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"messages": "question update successfully"})
+
+
+#
+# class QuestionDeleteView(APIView):
+#     def delete(self, request, pk):
+#         question = Question.objects.get(pk=pk)
+#         question.delete()
+#         return Response({'message : question deleted'}, status=status.HTTP_200_OK)
+#
+
+
+class QuestionDeleteView(DestroyAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+    def preform_destroy(self, pk):
         question = Question.objects.get(pk=pk)
         question.delete()
-        return Response({'message : question deleted'}, status=status.HTTP_200_OK)
