@@ -3,7 +3,7 @@ from rest_framework import generics, status
 # Create your views here.
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView, \
     DestroyAPIView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -13,8 +13,8 @@ from .serializers import PersonSerializer, QuestionSerializer
 
 
 class HomeView(APIView):
-    # permission_classes = [IsAdminUser, ]
-    throttle_scope = 'contacts'
+    permission_classes = [IsAuthenticated, ]
+    # throttle_scope = 'contacts'
 
     def get(self, request):
         person = Person.objects.all()
