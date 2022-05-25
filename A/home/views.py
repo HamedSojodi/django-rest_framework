@@ -14,6 +14,7 @@ from .serializers import PersonSerializer, QuestionSerializer
 
 class HomeView(APIView):
     # permission_classes = [IsAdminUser, ]
+    throttle_scope = 'contacts'
 
     def get(self, request):
         person = Person.objects.all()
