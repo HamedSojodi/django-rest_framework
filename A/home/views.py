@@ -13,7 +13,7 @@ from .serializers import PersonSerializer, QuestionSerializer
 
 
 class HomeView(APIView):
-    permission_classes = [IsAuthenticated, ]
+    # permission_classes = [IsAuthenticated, ]
     # throttle_scope = 'contacts'
 
     def get(self, request):
