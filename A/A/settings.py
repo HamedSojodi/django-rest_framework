@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'home',
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -132,10 +133,18 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'contacts': '5/minits',
         'uploads': '20/day'
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'REST API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
 
 
 SIMPLE_JWT = {
